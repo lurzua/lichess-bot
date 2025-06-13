@@ -29,7 +29,7 @@ class StockfishEngine {
         this.engine.stdin.write(cmd + '\n');
     }
 
-  async getBestMove(fen, movetime = 3000) {
+  async getBestMove(fen, movetime = 1000 * 10) {
     if (!this.ready) {
       await new Promise(resolve => {
         const check = setInterval(() => {
