@@ -11,24 +11,6 @@ const { Chess } = require('chess.js');
 
     await Initialize(page);
     await StartSolvingPuzzles(page, game, engine);
-
-    // await page.goto(lichess);
-    // await waitForStableBoard(page);
-    // const chessMoves = await readBoard(page);
-    // const numberOfMoves = Object.values(chessMoves).length;
-    // await convertToFen(page, game, chessMoves);
-    // const bestMove = await askStockfishForBestMove(game, engine);
-    // console.log("BestMove: ", bestMove);
-    // const chessboard = await readBoardInfo(page); // may be unecessary
-    // const moves = await extractEntireMoveList(page);
-    // const numMoves = Object.values(moves).length;
-    // await convertToFen(page, game, moves);
-    // await convertToFen(page, game, moves);
-    // const bestMove = await askStockfishForBestMove(game, engine);
-    // await movePiece(page, bestMove, numberOfMoves);
-    // console.log('Wait For 5 seconds before closing browser...');
-    // await page.waitForTimeout(1000 * 5);
-    // await browser.close();
 })();
 
 async function Initialize(page) {
@@ -64,17 +46,6 @@ async function WaitForStableBoard(page) {
     await page.waitForTimeout(1000 * 1);
 }
 
-// Unused
-async function readBoard(page) {
-    console.log('readBoard');
-    page.waitForSelector('move.hist, move.current');
-        const chessMoves = await page.$$eval('move.hist, move.current', els =>
-        els.map(el => el.textContent.trim())
-    );
-    console.log('All moves:', chessMoves);
-    return chessMoves;
-}
-
 function ConvertShortAlgebraicNotationToLongAlgebraicNotation(game, chessMoves) {
     game.reset();
     for (const playerMove of chessMoves) {
@@ -87,24 +58,6 @@ async function BestStockfishMove(game, engine) {
     const bestMove = engine.getBestMove(game.fen());
     console.log("FEN: ", bestMove);
     return bestMove;
-}
-
-// Unused
-async function readBoardInfo(page) {
-    console.log("readBoardInfo");
-    await page.waitForSelector('cg-container');
-    const board = await page.$eval('cg-container', el => {
-        const style = el.getAttribute('style'); // e.g., "width: 396px; height: 396px;"
-        const match = style.match(/width:\s*(\d+)px;\s*height:\s*(\d+)px/);
-        return {
-            width: match ? parseInt(match[1], 10) : null,
-            height: match ? parseInt(match[2], 10) : null,
-            name: 'cg-container',
-        };
-    });
-
-    console.log('Board: ', board);
-    return board;
 }
 
 async function MovePiece(page, bestMove, numberOfMoves) {
@@ -153,13 +106,6 @@ async function ReadMoveList(page) {
 }
 
 function FilterMoveList(moveList) {
-    // const moves = moveList.filter(m => {
-    //     const classes = m.class.split(' ');
-    //     return classes.includes('hist') || classes.includes('good') ||
-    //         (classes.includes('current') && classes.includes('active')) ||
-    //         (classes.includes('active') && classes.includes('win'));
-    // });
-
     const moves = moveList
     .filter(m => {
         const classes = m.class.trim().split(/\s+/);
